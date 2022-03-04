@@ -1,0 +1,25 @@
+[
+    {
+        "id": "c6a3a7bb.1562b",
+        "type": "openweathermap",
+        "z": "5230c72.fadcf38",
+        "name": "",
+        "wtype": "current",
+        "lon": "",
+        "lat": "",
+        "city": "Alicante",
+        "country": "Spain",
+        "language": "es",
+        "x": 350,
+        "y": 820,
+        "wires": [
+            [
+                "7c0bf475.aa83d4",
+                "e8a9e8df.0fa92",
+                "dc31b901.a1d718",
+                "9d1b0f24.78ac48",
+                "608189b7.212a88"
+            ]
+        ]
+    }
+]

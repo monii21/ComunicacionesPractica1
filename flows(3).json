@@ -1,0 +1,225 @@
+[
+    {
+        "id": "261101a0.0d141e",
+        "type": "tab",
+        "label": "Electricidad-2019",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "4d2d7552.2bd0b4",
+        "type": "http request",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://apidatos.ree.es/es/datos/balance/balance-electrico?start_date=2019-01-01T00:00&end_date=2019-01-31T23:59&time_trunc=day",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 310,
+        "y": 160,
+        "wires": [
+            [
+                "af55e7de.eaaa78"
+            ]
+        ]
+    },
+    {
+        "id": "3a607f16.7e598",
+        "type": "inject",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "4d2d7552.2bd0b4"
+            ]
+        ]
+    },
+    {
+        "id": "af55e7de.eaaa78",
+        "type": "json",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "1556d2ef.b37e45",
+                "f494343.fe1c5c8",
+                "e5b6e4c3.e9ec6",
+                "37caa3c7.55d0ac"
+            ]
+        ]
+    },
+    {
+        "id": "1556d2ef.b37e45",
+        "type": "debug",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "f494343.fe1c5c8",
+        "type": "function",
+        "z": "261101a0.0d141e",
+        "name": "Renovable_Hidraulica_dia_01_01_19",
+        "func": "variable=msg.payload;\nmsg.payload=\"EL VALOR DE LA ENERGÍA HIDRAÚLICA RENOVABLE EL DÍA 01-01-2019 FUE\"\nmsg.payload=variable.included[0].attributes.content[0].attributes.values[0].value\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 750,
+        "y": 240,
+        "wires": [
+            [
+                "34eb9fb0.7c2a98"
+            ]
+        ]
+    },
+    {
+        "id": "34eb9fb0.7c2a98",
+        "type": "debug",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e5b6e4c3.e9ec6",
+        "type": "function",
+        "z": "261101a0.0d141e",
+        "name": "Renovable_HIdraulica_max_mes_01_19",
+        "func": "var variable=msg.payload;\nvar max=0;\nfor(var i=0;i<24;i++){\n    aux=variable.included[0].attributes.content[0].attributes.values[i].value\n\n    if(aux>max){\n        max=aux;\n    }\n}\nmsg.payload=max\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 760,
+        "y": 340,
+        "wires": [
+            [
+                "8f1a473d.8a2c88"
+            ]
+        ]
+    },
+    {
+        "id": "8f1a473d.8a2c88",
+        "type": "debug",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "78ec6ad0.3baa24",
+        "type": "comment",
+        "z": "261101a0.0d141e",
+        "name": "Manera de obtener datos con el node Function",
+        "info": "",
+        "x": 770,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "221c1504.b9f602",
+        "type": "comment",
+        "z": "261101a0.0d141e",
+        "name": "Manera de obtener datos con el node Change",
+        "info": "",
+        "x": 790,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "37caa3c7.55d0ac",
+        "type": "change",
+        "z": "261101a0.0d141e",
+        "name": "Renobable_Hidraulica_dia_01_01_19",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.included[0].attributes.content[0].attributes.values[0].value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 520,
+        "wires": [
+            [
+                "89e62e6f.5c3228"
+            ]
+        ]
+    },
+    {
+        "id": "89e62e6f.5c3228",
+        "type": "debug",
+        "z": "261101a0.0d141e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 520,
+        "wires": []
+    }
+]

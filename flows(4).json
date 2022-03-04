@@ -1,0 +1,278 @@
+[
+    {
+        "id": "c1b2d92.2f418a8",
+        "type": "tab",
+        "label": "Electricidad-23-02-22",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "4204a2fc.78ae7c",
+        "type": "http request",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=2022-02-23T00:00&end_date=2022-02-23T23:59&time_trunc=hour",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 318,
+        "y": 170,
+        "wires": [
+            [
+                "2a111678.c223fa"
+            ]
+        ]
+    },
+    {
+        "id": "e9e37adc.b69a",
+        "type": "inject",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 145,
+        "y": 171,
+        "wires": [
+            [
+                "4204a2fc.78ae7c"
+            ]
+        ]
+    },
+    {
+        "id": "2a111678.c223fa",
+        "type": "json",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 530,
+        "y": 160,
+        "wires": [
+            [
+                "e5fe1a5b.63a7a8",
+                "648d92ab.ec5e04",
+                "3750b11d.0458c6",
+                "375e4988.81bad6",
+                "5fa8b37.069854c"
+            ]
+        ]
+    },
+    {
+        "id": "b10f89bf.81ff2",
+        "type": "debug",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "648d92ab.ec5e04",
+        "type": "function",
+        "z": "c1b2d92.2f418a8",
+        "name": "Precio más barato",
+        "func": "var variable=msg.payload;\nvar barato=variable.included[0].attributes.values[0].value;\nfor(var i=1;i<24;i++){\n    if(variable.included[0].attributes.values[i].value<barato){\n        barato=variable.included[0].attributes.values[i].value\n    }\n}\nmsg.payload=barato;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 810,
+        "y": 120,
+        "wires": [
+            [
+                "b10f89bf.81ff2"
+            ]
+        ]
+    },
+    {
+        "id": "e5fe1a5b.63a7a8",
+        "type": "function",
+        "z": "c1b2d92.2f418a8",
+        "name": "Hora a la que el precio es más barato",
+        "func": "var variable=msg.payload;\nvar barato=0;\nvar hora;\nfor(var i=0;i<24;i++){\n    if(variable.included[0].attributes.values[i].value>barato){\n        barato=variable.included[0].attributes.values[i].value\n        hora=variable.included[0].attributes.values[i].datetime\n    }\n}\nmsg.payload=hora\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 850,
+        "y": 220,
+        "wires": [
+            [
+                "bb82c647.f5fa3"
+            ]
+        ]
+    },
+    {
+        "id": "bb82c647.f5fa3",
+        "type": "debug",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "3750b11d.0458c6",
+        "type": "function",
+        "z": "c1b2d92.2f418a8",
+        "name": "Media del precio de la electricidad",
+        "func": "var variable=msg.payload;\nvar media=0;\nfor(var i=0;i<24;i++){\n    media+=variable.included[0].attributes.values[i].value\n    \n}\nvar mediaT;\nmediaT=media/24\nmsg.payload=mediaT;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 840,
+        "y": 320,
+        "wires": [
+            [
+                "f92483d1.8ce078"
+            ]
+        ]
+    },
+    {
+        "id": "f92483d1.8ce078",
+        "type": "debug",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "375e4988.81bad6",
+        "type": "debug",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "5fa8b37.069854c",
+        "type": "function",
+        "z": "c1b2d92.2f418a8",
+        "name": "Valores del precio durante todo el dia",
+        "func": "var variable=msg.payload\nmsg.payload=variable.included[0].attributes.values\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 880,
+        "y": 420,
+        "wires": [
+            [
+                "a6a39826.3e17e8"
+            ]
+        ]
+    },
+    {
+        "id": "a6a39826.3e17e8",
+        "type": "ui_chart",
+        "z": "c1b2d92.2f418a8",
+        "name": "",
+        "group": "648bdb5c.675ecc",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Precio",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 1130,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "648bdb5c.675ecc",
+        "type": "ui_group",
+        "name": "vuelos",
+        "tab": "65e6993e.66f1f8",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "65e6993e.66f1f8",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

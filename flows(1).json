@@ -1,0 +1,441 @@
+[
+    {
+        "id": "621a5e8236f478ac",
+        "type": "tab",
+        "label": "Aviation",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d3f20ed4cf8d0dfa",
+        "type": "inject",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 340,
+        "wires": [
+            [
+                "4002d05b7505b335"
+            ]
+        ]
+    },
+    {
+        "id": "4002d05b7505b335",
+        "type": "http request",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://api.aviationstack.com/v1/flights?access_key=bd1ab22c9cb55c28138fa5d8e8b9579e",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 430,
+        "y": 340,
+        "wires": [
+            [
+                "edb7486ca6255d7d"
+            ]
+        ]
+    },
+    {
+        "id": "edb7486ca6255d7d",
+        "type": "json",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 590,
+        "y": 340,
+        "wires": [
+            [
+                "707b06f80c10c1c6"
+            ]
+        ]
+    },
+    {
+        "id": "ce7ba4e2b79bdce8",
+        "type": "flightradar24",
+        "z": "621a5e8236f478ac",
+        "lat": "payload.latitud",
+        "latType": "msg",
+        "lon": "payload.longitud",
+        "lonType": "msg",
+        "name": "",
+        "x": 2010,
+        "y": 420,
+        "wires": [
+            [
+                "46cab07513b4db4b"
+            ]
+        ]
+    },
+    {
+        "id": "465b97aacc7b2181",
+        "type": "function",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "func": "var variable=msg.payload\nvar num=variable.numero\n\n    \nmsg.payload=variable.data[num].departure.airport\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 380,
+        "wires": [
+            [
+                "26fd31c2ef8967d8",
+                "c172d9358d174638"
+            ]
+        ]
+    },
+    {
+        "id": "26fd31c2ef8967d8",
+        "type": "function",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "func": "apiKey = '469d1d7509c8b5a4b70cf03a920b87c7' \napi = 'api.openweathermap.org/geo/1.0/direct?q='  \nmsg.url = api + msg.payload + '&limit=5&appid=' + apiKey \n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1460,
+        "y": 420,
+        "wires": [
+            [
+                "c8ef78375f3fee91",
+                "d6a23c604aca86b1"
+            ]
+        ]
+    },
+    {
+        "id": "84d493eb494282de",
+        "type": "function",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "func": "return{\n    payload:{\n        longitud: msg.payload[0].lon,\n        latitud: msg.payload[0].lat\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1840,
+        "y": 420,
+        "wires": [
+            [
+                "ce7ba4e2b79bdce8",
+                "c827a726dbc8950e"
+            ]
+        ]
+    },
+    {
+        "id": "c8ef78375f3fee91",
+        "type": "http request",
+        "z": "621a5e8236f478ac",
+        "name": "Ciudades",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "body",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 1640,
+        "y": 420,
+        "wires": [
+            [
+                "84d493eb494282de",
+                "d9c1575bb3524099"
+            ]
+        ]
+    },
+    {
+        "id": "b373c9fb8ab406fe",
+        "type": "ui_numeric",
+        "z": "621a5e8236f478ac",
+        "name": "numero",
+        "label": "INtroduce un numero",
+        "tooltip": "",
+        "group": "d9d9c4294abd79a0",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "format": "{{msg.payload}}",
+        "min": 0,
+        "max": "100",
+        "step": 1,
+        "x": 380,
+        "y": 420,
+        "wires": [
+            [
+                "65db7f75da10864e"
+            ]
+        ]
+    },
+    {
+        "id": "cbeabfd8157d7c62",
+        "type": "join",
+        "z": "621a5e8236f478ac",
+        "name": "union",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 950,
+        "y": 360,
+        "wires": [
+            [
+                "820fa5e21788f026",
+                "465b97aacc7b2181"
+            ]
+        ]
+    },
+    {
+        "id": "707b06f80c10c1c6",
+        "type": "change",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "datos",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 340,
+        "wires": [
+            [
+                "cbeabfd8157d7c62"
+            ]
+        ]
+    },
+    {
+        "id": "820fa5e21788f026",
+        "type": "debug",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1130,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "65db7f75da10864e",
+        "type": "function",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "func": "return{\n    payload:{\n        numero : msg.payload\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 420,
+        "wires": [
+            [
+                "381e3d5310984368"
+            ]
+        ]
+    },
+    {
+        "id": "381e3d5310984368",
+        "type": "change",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "numero",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 420,
+        "wires": [
+            [
+                "cbeabfd8157d7c62"
+            ]
+        ]
+    },
+    {
+        "id": "c172d9358d174638",
+        "type": "debug",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d9c1575bb3524099",
+        "type": "debug",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1790,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "46cab07513b4db4b",
+        "type": "worldmap",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "lat": "",
+        "lon": "",
+        "zoom": "",
+        "layer": "OSMC",
+        "cluster": "5",
+        "maxage": "0",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "showgrid": "false",
+        "allowFileDrop": "false",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN,HM",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,EsriT,EsriDG,UKOS,SW",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 2160,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "d6a23c604aca86b1",
+        "type": "debug",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1610,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c827a726dbc8950e",
+        "type": "debug",
+        "z": "621a5e8236f478ac",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1997.11669921875,
+        "y": 344.8833312988281,
+        "wires": []
+    },
+    {
+        "id": "d9d9c4294abd79a0",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "aff56fe04cc23ec9",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "aff56fe04cc23ec9",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
